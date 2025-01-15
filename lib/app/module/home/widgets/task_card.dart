@@ -15,7 +15,16 @@ class TaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = HexColor.fromHex(task.color); // Convert hex color
+    // Validate and convert color with fallback to default (grey) if invalid
+    final color = () {
+      try {
+        return HexColor.fromHex(task.color); // Attempt to parse the color
+      } catch (e) {
+        print("Invalid color format for task '${task.title}': ${task.color}");
+        return Colors.grey; // Fallback color
+      }
+    }();
+
     final squareWidth = Get.width - 12.0.wp; // Calculate square width
 
     return Container(
@@ -37,7 +46,7 @@ class TaskCard extends StatelessWidget {
         children: [
           // Step Progress Indicator
           StepProgressIndicator(
-            totalSteps: task.todos?.length ?? 0,
+            totalSteps: task.todos?.length ?? 1, // Ensure totalSteps > 0
             currentStep:
                 task.todos?.where((todo) => todo.done == true).length ?? 0,
             size: 5,
